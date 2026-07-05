@@ -30,10 +30,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            /* 1. Делаем фон таким же розовым, как и во всей игре */
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             display: flex;
-            flex-direction: column; /* Чтобы полоска была под логотипом */
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -41,12 +40,10 @@
         }
 
         #loadingScreen img {
-            /* 2. Делаем логотип гораздо больше (откормил джунгарика!) */
             width: 350px; 
-            max-width: 85vw; /* Защита, чтобы не вылез за края на совсем маленьких экранах */
-            margin-bottom: 40px; /* Отступ вниз до шкалы загрузки */
+            max-width: 85vw; 
+            margin-bottom: 40px; 
             animation: pulse 1.5s infinite;
-            /* Если у твоей картинки белый невидимый фон, это свойство поможет его скрыть и смешать с розовым: */
             mix-blend-mode: multiply; 
         }
 
@@ -56,25 +53,23 @@
             100% { transform: scale(1); }
         }
 
-        /* 3. Шкала загрузки как на iPhone */
         .progress-bar-container {
-            width: 220px; /* Ширина полоски */
-            height: 5px; /* Тонкая и изящная */
-            background-color: rgba(255, 255, 255, 0.3); /* Полупрозрачный фон */
-            border-radius: 10px; /* Закругленные края */
+            width: 220px; 
+            height: 5px; 
+            background-color: rgba(255, 255, 255, 0.3); 
+            border-radius: 10px; 
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
-            width: 0%; /* Изначально 0% */
-            background-color: #ffffff; /* Белая заполняющаяся часть */
+            width: 0%; 
+            background-color: #ffffff; 
             border-radius: 10px;
-            /* Плавная анимация длительностью 2.5 секунды (как время загрузки) */
             transition: width 2.5s cubic-bezier(0.4, 0.0, 0.2, 1); 
         }
 
-        /* Главный контейнер (Изначально скрыт) */
+        /* --- ГЛАВНОЕ МЕНЮ --- */
         #mainMenu {
             display: none; 
             flex-direction: column;
@@ -102,7 +97,6 @@
             filter: drop-shadow(0px 5px 0px #ff6b81);
         }
 
-        /* Панель кнопок */
         .window-container {
             background-color: rgba(255, 182, 193, 0.4); 
             backdrop-filter: blur(12px);
@@ -110,11 +104,9 @@
             border-radius: 40px;
             border: 2px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            
             width: 92%; 
             height: 50vh; 
             margin-bottom: 3vh; 
-            
             display: flex;
             flex-direction: column;
             justify-content: center; 
@@ -144,31 +136,79 @@
             box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4);
         }
 
-        #gameScreen {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            color: white;
-            font-size: 2rem;
-            text-align: center;
-            text-shadow: 0 2px 4px #ff6b81;
-            padding: 20px;
-        }
-
         .small-btn {
-            margin-top: 30px;
             font-size: 1.2rem;
             padding: 15px;
             width: 200px;
+            margin-bottom: 20px;
         }
+
+        /* --- ИГРОВОЙ ЭКРАН --- */
+        #gameScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between; /* Распределяем элементы по вертикали */
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            padding: 40px 20px 20px 20px;
+        }
+
+        /* Счетчик кликов/очков */
+        #scoreBoard {
+            background-color: rgba(255, 255, 255, 0.6);
+            padding: 10px 30px;
+            border-radius: 20px;
+            color: #ff6b81;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid white;
+        }
+
+        /* Контейнер для нашего пухляша */
+        #unicornContainer {
+            flex-grow: 1; /* Занимает все свободное место в центре */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Сам единорожка */
+        #unicornChar {
+            width: 280px; /* Оптимальный размер для тапов */
+            max-width: 80vw;
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15));
+            /* Анимация спокойного покачивания (дыхания) */
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            /* Убираем фон картинки, если он есть, через наложение */
+            mix-blend-mode: multiply;
+        }
+
+        /* Анимация покачивания */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Анимация прыжка при тапе */
+        .bounce {
+            animation: jump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; /* Перебивает float на время клика */
+        }
+
+        @keyframes jump {
+            0% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.1) translateY(-30px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Экран загрузки с логотипом и шкалой -->
+    <!-- Экран загрузки -->
     <div id="loadingScreen">
         <img src="logo.png" alt="Maksimkin Logo">
         <div class="progress-bar-container">
@@ -191,37 +231,49 @@
 
     <!-- Игровой экран -->
     <div id="gameScreen">
-        <p>Здесь скоро появится твой единорожка! ✨</p>
-        <button id="backBtn" class="small-btn">Вернуться</button>
+        <!-- Счетчик -->
+        <div id="scoreBoard">💖 <span id="scoreText">0</span></div>
+
+        <!-- Наш персонаж -->
+        <div id="unicornContainer">
+            <img src="image_61258f.jpg" alt="Единорожка" id="unicornChar">
+        </div>
+
+        <!-- Кнопка возврата -->
+        <button id="backBtn" class="small-btn">В меню</button>
     </div>
 
     <script>
+        // Элементы интерфейса
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('progressBar');
         const mainMenu = document.getElementById('mainMenu');
         const gameScreen = document.getElementById('gameScreen');
+        
+        // Кнопки
         const playBtn = document.getElementById('playBtn');
         const exitBtn = document.getElementById('exitBtn');
         const backBtn = document.getElementById('backBtn');
 
+        // Игровые элементы
+        const unicornChar = document.getElementById('unicornChar');
+        const scoreText = document.getElementById('scoreText');
+        
+        let score = 0; // Переменная для хранения очков
+
         // Логика загрузочного экрана
         window.addEventListener('load', () => {
-            // Запускаем заполнение шкалы сразу после загрузки страницы
             setTimeout(() => {
                 progressBar.style.width = '100%';
             }, 50);
 
-            // Имитация времени загрузки (2.5 секунды)
             setTimeout(() => {
-                loadingScreen.style.opacity = '0'; // Плавное исчезновение
-                
-                // Ждем окончания анимации (0.8с)
+                loadingScreen.style.opacity = '0'; 
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                    mainMenu.style.display = 'flex'; // Показываем меню
+                    mainMenu.style.display = 'flex'; 
                 }, 800);
-                
-            }, 2500); // 2.5 секунды
+            }, 2500); 
         });
 
         // Навигация
@@ -238,6 +290,29 @@
         exitBtn.addEventListener('click', () => {
             alert('Спасибо за игру! Единорожка будет скучать! 💖');
         });
+
+        // --- ЛОГИКА ИГРЫ (КЛИКЕР) ---
+
+        // Обработка тапа по единорожке
+        unicornChar.addEventListener('click', () => {
+            // Увеличиваем очки
+            score++;
+            scoreText.innerText = score;
+
+            // Добавляем класс с анимацией прыжка
+            unicornChar.classList.add('bounce');
+
+            // Удаляем класс через 300мс (когда закончится анимация), чтобы можно было кликнуть снова
+            setTimeout(() => {
+                unicornChar.classList.remove('bounce');
+            }, 300);
+            
+            // Если на телефоне есть вибромоторчик, делаем легкий тактильный отклик (работает не во всех браузерах)
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        });
+
     </script>
 </body>
 </html>
