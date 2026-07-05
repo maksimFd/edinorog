@@ -2,91 +2,98 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- Важнейший тег для мобилок: подгоняет размер под экран и запрещает масштабирование -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой единорожка</title>
     <style>
-        /* Сбрасываем базовые отступы браузера и делаем поведение как у приложения */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* Запрет выделения текста */
-            -webkit-tap-highlight-color: transparent; /* Убираем синий квадрат при тапе на Android */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            /* Красивый мягкий розовый градиент */
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
             height: 100vh;
             width: 100vw;
             display: flex;
             justify-content: center;
-            overflow: hidden; /* Запрет любой прокрутки */
+            overflow: hidden;
         }
 
         /* Контейнер главного меню */
         #mainMenu {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center; /* Теперь всё собирается в центре экрана */
             align-items: center;
             width: 100%;
             height: 100%;
-            padding: 10vh 20px 8vh 20px; /* Отступы сверху и снизу */
+            padding-bottom: 12vh; /* Слегка приподнимаем весь блок вверх */
+            gap: 30px; /* Расстояние между заголовком и окошком */
         }
 
-        /* Заголовок */
+        .header-container {
+            text-align: center;
+        }
+
         h1 {
             color: #ffffff;
             font-size: 3.2rem;
-            text-align: center;
             line-height: 1.2;
-            /* Делаем красивую тень и обводку, чтобы текст был объемным */
             text-shadow: 0px 5px 0px #ff6b81, 0 0 20px rgba(255,255,255,0.7);
         }
 
-        /* Эмодзи единорожки для украшения */
         .unicorn-icon {
             font-size: 5rem;
             margin-bottom: 10px;
             filter: drop-shadow(0px 5px 0px #ff6b81);
         }
 
-        /* Контейнер для кнопок внизу */
-        .button-container {
+        /* Новое прозрачное окошко (на основе icon dlay knopok.png) */
+        .window-container {
+            /* Берем голубой цвет с картинки, но делаем его прозрачным на 40% (0.4) */
+            background-color: rgba(179, 204, 255, 0.4); 
+            border-radius: 30px; /* Закругляем края */
+            padding: 40px 20px;
+            width: 90%;
+            max-width: 320px;
+            
+            /* Создаем эффект размытия фона под окошком (эффект стекла) */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); /* Для поддержки на iPhone */
+            
+            /* Добавляем легкую белую рамку для объема */
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Расстояние между кнопками */
-            width: 100%;
-            max-width: 320px; /* Чтобы на планшете/ПК кнопки не растягивались на весь экран */
+            gap: 20px; /* Расстояние между кнопками внутри окошка */
         }
 
-        /* Стили кнопок (идеально для пальцев) */
         button {
             background-color: #ff6b81;
             color: white;
             border: none;
-            border-radius: 35px; /* Круглые края */
+            border-radius: 35px;
             padding: 20px;
             font-size: 1.6rem;
             font-weight: bold;
             font-family: inherit;
-            /* Объемная тень под кнопкой */
             box-shadow: 0 8px 0 #d03e56, 0 15px 20px rgba(255, 107, 129, 0.4);
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s;
             width: 100%;
         }
 
-        /* Анимация нажатия (эффект вдавленной кнопки) */
         button:active {
-            transform: translateY(8px); /* Опускаем кнопку вниз */
-            box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4); /* Убираем нижнюю грань */
+            transform: translateY(8px);
+            box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4);
         }
 
-        /* Экран самой игры (пока скрыт) */
         #gameScreen {
             display: none;
             flex-direction: column;
@@ -101,7 +108,6 @@
             padding: 20px;
         }
 
-        /* Уменьшенная кнопка возврата для экрана игры */
         .small-btn {
             margin-top: 30px;
             font-size: 1.2rem;
@@ -114,48 +120,42 @@
 
     <!-- Главное меню -->
     <div id="mainMenu">
-        <div>
-            <div class="unicorn-icon" style="text-align: center;">🦄</div>
+        <div class="header-container">
+            <div class="unicorn-icon">🦄</div>
             <h1>Мой<br>единорожка</h1>
         </div>
         
-        <div class="button-container">
+        <!-- Окошко, оборачивающее кнопки -->
+        <div class="window-container">
             <button id="playBtn">Играть</button>
             <button id="exitBtn">Выход</button>
         </div>
     </div>
 
-    <!-- Игровой экран (заглушка) -->
+    <!-- Игровой экран -->
     <div id="gameScreen">
         <p>Здесь скоро появится твой единорожка! ✨</p>
         <button id="backBtn" class="small-btn">Вернуться</button>
     </div>
 
     <script>
-        // Получаем элементы интерфейса
         const mainMenu = document.getElementById('mainMenu');
         const gameScreen = document.getElementById('gameScreen');
         const playBtn = document.getElementById('playBtn');
         const exitBtn = document.getElementById('exitBtn');
         const backBtn = document.getElementById('backBtn');
 
-        // Обработка кнопки "Играть"
         playBtn.addEventListener('click', () => {
-            // Прячем меню и показываем игру
             mainMenu.style.display = 'none';
             gameScreen.style.display = 'flex';
         });
 
-        // Обработка кнопки "Вернуться" (с экрана игры в меню)
         backBtn.addEventListener('click', () => {
             gameScreen.style.display = 'none';
             mainMenu.style.display = 'flex';
         });
 
-        // Обработка кнопки "Выход"
         exitBtn.addEventListener('click', () => {
-            // Браузеры запрещают закрывать вкладку с помощью JavaScript из соображений безопасности,
-            // поэтому мы просто выводим милое прощальное сообщение.
             alert('Спасибо за игру! Единорожка будет скучать! 💖');
         });
     </script>
