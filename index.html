@@ -23,19 +23,45 @@
             overflow: hidden;
         }
 
-        /* Главный контейнер */
-        #mainMenu {
+        /* --- ЭКРАН ЗАГРУЗКИ --- */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff; /* Белый фон под картинку */
             display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Поверх всех остальных элементов */
+            transition: opacity 0.8s ease; /* Плавное исчезновение */
+        }
+
+        #loadingScreen img {
+            max-width: 80%; /* Чтобы логотип не вылезал за края на маленьких экранах */
+            animation: pulse 1.5s infinite; /* Эффект "дыхания" логотипа */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Главный контейнер (Изначально скрыт) */
+        #mainMenu {
+            display: none; /* Скрыто до окончания загрузки */
             flex-direction: column;
             align-items: center;
             width: 100%;
             height: 100%;
-            padding-top: 6vh; /* Поднимаем логотип и текст наверх (зеленая зона) */
+            padding-top: 6vh; 
         }
 
         .header-container {
             text-align: center;
-            margin-bottom: auto; /* Автоматически отталкивает нижнюю панель вниз */
+            margin-bottom: auto; 
         }
 
         h1 {
@@ -51,22 +77,22 @@
             filter: drop-shadow(0px 5px 0px #ff6b81);
         }
 
-        /* Панель кнопок (красная зона) */
+        /* Панель кнопок */
         .window-container {
-            background-color: rgba(255, 182, 193, 0.4); /* Розовый полупрозрачный оттенок */
+            background-color: rgba(255, 182, 193, 0.4); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 40px;
             border: 2px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             
-            width: 92%; /* Широкая панель */
-            height: 50vh; /* Занимает половину экрана в высоту */
-            margin-bottom: 3vh; /* Небольшой отступ от нижнего края экрана */
+            width: 92%; 
+            height: 50vh; 
+            margin-bottom: 3vh; 
             
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Центрируем кнопки внутри большой панели */
+            justify-content: center; 
             align-items: center;
             gap: 25px; 
             padding: 20px;
@@ -84,7 +110,7 @@
             box-shadow: 0 8px 0 #d03e56, 0 15px 20px rgba(255, 107, 129, 0.4);
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s;
-            width: 90%; /* Кнопки занимают почти всю ширину внутри панели */
+            width: 90%; 
             max-width: 320px;
         }
 
@@ -117,32 +143,54 @@
 </head>
 <body>
 
+    <!-- Экран загрузки с твоим логотипом -->
+    <div id="loadingScreen">
+        <img src="logo.png" alt="Maksimkin Logo">
+    </div>
+
+    <!-- Главное меню -->
     <div id="mainMenu">
-        <!-- Блок сверху (зеленая зона) -->
         <div class="header-container">
             <div class="unicorn-icon">🦄</div>
             <h1>Мой<br>единорожка</h1>
         </div>
         
-        <!-- Большая панель снизу (красная зона) -->
         <div class="window-container">
             <button id="playBtn">Играть</button>
             <button id="exitBtn">Выход</button>
         </div>
     </div>
 
+    <!-- Игровой экран -->
     <div id="gameScreen">
         <p>Здесь скоро появится твой единорожка! ✨</p>
         <button id="backBtn" class="small-btn">Вернуться</button>
     </div>
 
     <script>
+        const loadingScreen = document.getElementById('loadingScreen');
         const mainMenu = document.getElementById('mainMenu');
         const gameScreen = document.getElementById('gameScreen');
         const playBtn = document.getElementById('playBtn');
         const exitBtn = document.getElementById('exitBtn');
         const backBtn = document.getElementById('backBtn');
 
+        // Логика загрузочного экрана
+        window.addEventListener('load', () => {
+            // Имитация времени загрузки (2.5 секунды)
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0'; // Начинаем плавное исчезновение
+                
+                // Ждем окончания анимации (0.8с) и полностью удаляем экран
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainMenu.style.display = 'flex'; // Показываем меню
+                }, 800);
+                
+            }, 2500);
+        });
+
+        // Навигация
         playBtn.addEventListener('click', () => {
             mainMenu.style.display = 'none';
             gameScreen.style.display = 'flex';
