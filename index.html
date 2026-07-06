@@ -173,12 +173,11 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             opacity: 0;
             transition: opacity 0.3s ease;
-            pointer-events: none; /* Чтобы облачко не мешало кликать */
+            pointer-events: none; 
             white-space: nowrap;
             z-index: 10;
         }
 
-        /* Хвостик у облачка */
         #speechBubble::after {
             content: '';
             position: absolute;
@@ -196,7 +195,6 @@
             max-height: 65vh; 
             filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
             transition: transform 0.1s ease; 
-            /* Важно! Отключаем стандартные свайпы браузера поверх единорога */
             touch-action: none;
         }
 
@@ -419,6 +417,7 @@
 
         let stats = { hunger: 80, happy: 70, energy: 100 };
         let bubbleTimeout;
+        let gameLoopTick = 0; // Добавили счетчик времени для напоминаний
 
         window.addEventListener('load', () => {
             setTimeout(() => { progressBar.style.width = '100%'; }, 50);
@@ -467,7 +466,7 @@
             clearTimeout(bubbleTimeout);
             bubbleTimeout = setTimeout(() => {
                 speechBubble.style.opacity = '0';
-            }, 2000); // Скрываем через 2 секунды
+            }, 2500); 
         }
 
         function animatePet(scale = 1.05) {
@@ -478,10 +477,9 @@
         }
 
         // --- ЛОГИКА ЖЕСТОВ НА ЕДИНОРОЖКЕ ---
-        
         let startX, startY, lastX, lastY;
         let isDragging = false;
-        let totalMove = 0; // Считаем общую длину движения пальца
+        let totalMove = 0; 
 
         unicornSvg.addEventListener('pointerdown', (e) => {
             startX = e.clientX;
@@ -490,13 +488,11 @@
             lastY = e.clientY;
             isDragging = true;
             totalMove = 0;
-            // Захватываем курсор/палец, чтобы не терять контакт
             unicornSvg.setPointerCapture(e.pointerId);
         });
 
         unicornSvg.addEventListener('pointermove', (e) => {
             if (!isDragging) return;
-            // Прибавляем пройденное расстояние
             totalMove += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
             lastX = e.clientX;
             lastY = e.clientY;
@@ -507,25 +503,19 @@
             isDragging = false;
             unicornSvg.releasePointerCapture(e.pointerId);
 
-            let dy = e.clientY - startY; // Насколько пикселей палец ушел вниз
+            let dy = e.clientY - startY;
 
-            // Анализируем жест:
             if (totalMove < 15) {
-                // Если палец почти не двигался — это обычный КЛИК
                 speak('Ой, больно! 😭', 'bad');
                 stats.happy = Math.max(0, stats.happy - 15);
-                animatePet(0.95); // Сжимается от боли
+                animatePet(0.95); 
                 updateUI();
-                
             } else if (dy > 60) {
-                // Если палец ушел сильно вниз — СВАЙП ПО ГОЛОВЕ (сверху вниз)
                 speak('Ммм, как приятно! 🥰', 'good');
                 stats.happy = Math.min(100, stats.happy + 15);
                 animatePet(1.05);
                 updateUI();
-                
             } else if (totalMove > 40) {
-                // Если двигали много, но не сильно вниз — ЧЕШЕМ ПУЗИКО
                 speak('Хи-хи, щекотно! ✨', 'good');
                 stats.happy = Math.min(100, stats.happy + 10);
                 animatePet(1.05);
@@ -566,12 +556,29 @@
             }
         });
 
+        // --- ГЛОБАЛЬНЫЙ ТАЙМЕР ПОТРЕБНОСТЕЙ ---
         setInterval(() => {
             if (gameScreen.style.display === 'flex') {
                 stats.hunger = Math.max(0, stats.hunger - 2);
                 stats.happy = Math.max(0, stats.happy - 1);
                 stats.energy = Math.max(0, stats.energy - 1);
                 updateUI();
+                
+                gameLoopTick++;
+                
+                // Каждые 9 секунд (3 тика по 3 сек) проверяем, нужна ли помощь
+                if (gameLoopTick % 3 === 0) {
+                    if (stats.energy < 30) {
+                        speak('Я хочу спать! 🥱', 'bad');
+                        animatePet(0.95);
+                    } else if (stats.hunger < 30) {
+                        speak('Я очень голодна! 🍖', 'bad');
+                        animatePet(0.95);
+                    } else if (stats.happy < 30) {
+                        speak('Мне грустно... Поиграй со мной! 🥺', 'bad');
+                        animatePet(0.95);
+                    }
+                }
             }
         }, 3000);
 
