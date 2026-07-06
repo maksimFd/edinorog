@@ -136,7 +136,7 @@
             box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4);
         }
 
-        /* --- ИГРОВОЙ ЭКРАН (ТАМАГОЧИ) --- */
+        /* --- ИГРОВОЙ ЭКРАН --- */
         #gameScreen {
             display: none;
             flex-direction: column;
@@ -144,7 +144,7 @@
             align-items: center;
             height: 100%;
             width: 100%;
-            padding: 40px 20px 20px 20px;
+            padding: 20px 20px 30px 20px; 
         }
 
         #unicornContainer {
@@ -156,12 +156,48 @@
             width: 100%;
         }
 
+        /* Облачко с текстом для уведомлений */
+        #speechBubble {
+            --bg-color: rgba(255, 255, 255, 0.95);
+            --text-color: #d03e56;
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Чтобы облачко не мешало кликать */
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        /* Хвостик у облачка */
+        #speechBubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: var(--bg-color) transparent transparent transparent;
+        }
+
         #unicornSvg {
             width: 100%;
-            max-width: 400px; 
-            max-height: 48vh; 
+            max-width: 500px; 
+            max-height: 65vh; 
             filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
             transition: transform 0.1s ease; 
+            /* Важно! Отключаем стандартные свайпы браузера поверх единорога */
+            touch-action: none;
         }
 
         .blinking-eyes {
@@ -184,7 +220,7 @@
             50% { transform: rotate(15deg); }
         }
 
-        /* --- НОВАЯ ПАНЕЛЬ В СТИЛЕ ГОВОРЯЩЕГО ТОМА --- */
+        /* --- ПАНЕЛЬ В СТИЛЕ ГОВОРЯЩЕГО ТОМА --- */
         .tom-action-panel {
             display: flex;
             gap: 20px;
@@ -198,45 +234,41 @@
             position: relative;
             width: 80px;
             height: 80px;
-            border-radius: 50%; /* Делаем кнопки идеально круглыми */
-            background-color: rgba(255, 255, 255, 0.4); /* Полупрозрачный фон колбы */
-            border: 4px solid white; /* Белая окантовка */
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4); 
+            border: 4px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden; /* Важно: обрезает внутренний фон по форме круга */
+            overflow: hidden; 
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.1s;
             padding: 0;
-            /* Исправление для Safari, чтобы overflow: hidden работал на скругленных краях */
             transform: translateZ(0); 
         }
 
         .tom-btn:active {
-            transform: scale(0.9); /* Уменьшается при нажатии */
+            transform: scale(0.9);
         }
 
-        /* Внутренний уровень "жидкости" */
         .fill-level {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%; /* Меняется через JavaScript */
+            height: 100%; 
             transition: height 0.3s ease-out;
             z-index: 1;
         }
 
-        /* Цвета для разных показателей */
         #hungerFill { background-color: #f39c12; }
         #happyFill { background-color: #e74c3c; }
         #energyFill { background-color: #3498db; }
 
-        /* Иконка поверх уровня жидкости */
         .btn-icon {
             position: relative;
-            z-index: 2; /* Поверх фона */
+            z-index: 2; 
             font-size: 2.2rem;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
@@ -282,6 +314,9 @@
     </div>
 
     <div id="gameScreen">
+
+        <!-- Облачко уведомлений -->
+        <div id="speechBubble">Приветик!</div>
 
         <!-- Единорожка -->
         <div id="unicornContainer">
@@ -341,7 +376,6 @@
             </svg>
         </div>
 
-        <!-- Кнопки в стиле Говорящего Тома -->
         <div class="tom-action-panel">
             <button class="tom-btn" id="feedBtn">
                 <div class="fill-level" id="hungerFill"></div>
@@ -359,7 +393,6 @@
             </button>
         </div>
 
-        <!-- Кнопка назад -->
         <button id="backBtn" class="small-btn">В меню</button>
     </div>
 
@@ -373,17 +406,19 @@
         const exitBtn = document.getElementById('exitBtn');
         const backBtn = document.getElementById('backBtn');
 
-        // Получаем фоны кнопок, которые будут "расти"
         const hungerFill = document.getElementById('hungerFill');
         const happyFill = document.getElementById('happyFill');
         const energyFill = document.getElementById('energyFill');
+        
         const unicornSvg = document.getElementById('unicornSvg');
+        const speechBubble = document.getElementById('speechBubble');
         
         const feedBtn = document.getElementById('feedBtn');
         const playWithBtn = document.getElementById('playWithBtn');
         const sleepBtn = document.getElementById('sleepBtn');
 
         let stats = { hunger: 80, happy: 70, energy: 100 };
+        let bubbleTimeout;
 
         window.addEventListener('load', () => {
             setTimeout(() => { progressBar.style.width = '100%'; }, 50);
@@ -410,19 +445,96 @@
             alert('Спасибо за игру! Единорожка будет скучать! 💖');
         });
 
-        // Теперь мы меняем высоту заливки внутри кнопки
         function updateUI() {
             hungerFill.style.height = stats.hunger + '%';
             happyFill.style.height = stats.happy + '%';
             energyFill.style.height = stats.energy + '%';
         }
 
-        function animatePet() {
-            unicornSvg.style.transform = 'scale(1.03)';
+        // Функция для вывода уведомлений
+        function speak(text, type) {
+            speechBubble.innerText = text;
+            speechBubble.style.opacity = '1';
+
+            if (type === 'bad') {
+                speechBubble.style.setProperty('--bg-color', '#ff4757');
+                speechBubble.style.setProperty('--text-color', 'white');
+            } else {
+                speechBubble.style.setProperty('--bg-color', 'rgba(255, 255, 255, 0.95)');
+                speechBubble.style.setProperty('--text-color', '#d03e56');
+            }
+
+            clearTimeout(bubbleTimeout);
+            bubbleTimeout = setTimeout(() => {
+                speechBubble.style.opacity = '0';
+            }, 2000); // Скрываем через 2 секунды
+        }
+
+        function animatePet(scale = 1.05) {
+            unicornSvg.style.transform = `scale(${scale})`;
             setTimeout(() => {
                 unicornSvg.style.transform = 'scale(1)';
             }, 150);
         }
+
+        // --- ЛОГИКА ЖЕСТОВ НА ЕДИНОРОЖКЕ ---
+        
+        let startX, startY, lastX, lastY;
+        let isDragging = false;
+        let totalMove = 0; // Считаем общую длину движения пальца
+
+        unicornSvg.addEventListener('pointerdown', (e) => {
+            startX = e.clientX;
+            startY = e.clientY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            isDragging = true;
+            totalMove = 0;
+            // Захватываем курсор/палец, чтобы не терять контакт
+            unicornSvg.setPointerCapture(e.pointerId);
+        });
+
+        unicornSvg.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            // Прибавляем пройденное расстояние
+            totalMove += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        unicornSvg.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            unicornSvg.releasePointerCapture(e.pointerId);
+
+            let dy = e.clientY - startY; // Насколько пикселей палец ушел вниз
+
+            // Анализируем жест:
+            if (totalMove < 15) {
+                // Если палец почти не двигался — это обычный КЛИК
+                speak('Ой, больно! 😭', 'bad');
+                stats.happy = Math.max(0, stats.happy - 15);
+                animatePet(0.95); // Сжимается от боли
+                updateUI();
+                
+            } else if (dy > 60) {
+                // Если палец ушел сильно вниз — СВАЙП ПО ГОЛОВЕ (сверху вниз)
+                speak('Ммм, как приятно! 🥰', 'good');
+                stats.happy = Math.min(100, stats.happy + 15);
+                animatePet(1.05);
+                updateUI();
+                
+            } else if (totalMove > 40) {
+                // Если двигали много, но не сильно вниз — ЧЕШЕМ ПУЗИКО
+                speak('Хи-хи, щекотно! ✨', 'good');
+                stats.happy = Math.min(100, stats.happy + 10);
+                animatePet(1.05);
+                updateUI();
+            }
+        });
+
+
+        // --- ЛОГИКА КНОПОК ---
 
         feedBtn.addEventListener('click', () => {
             if (stats.hunger < 100) {
@@ -441,7 +553,7 @@
                 animatePet();
                 updateUI();
             } else {
-                alert('Единорожка слишком устал для игр! Уложите его спать.');
+                speak('Я слишком устала для игр! 😴', 'bad');
             }
         });
 
@@ -454,7 +566,6 @@
             }
         });
 
-        // Постепенное падение характеристик
         setInterval(() => {
             if (gameScreen.style.display === 'flex') {
                 stats.hunger = Math.max(0, stats.hunger - 2);
