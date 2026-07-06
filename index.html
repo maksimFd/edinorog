@@ -115,7 +115,7 @@
             padding: 20px;
         }
 
-        button {
+        button.menu-btn {
             background-color: #ff6b81;
             color: white;
             border: none;
@@ -131,84 +131,137 @@
             max-width: 320px;
         }
 
-        button:active {
+        button.menu-btn:active {
             transform: translateY(8px);
             box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4);
         }
 
-        .small-btn {
-            font-size: 1.2rem;
-            padding: 15px;
-            width: 200px;
-            margin-bottom: 20px;
-        }
-
-        /* --- ИГРОВОЙ ЭКРАН --- */
+        /* --- ИГРОВОЙ ЭКРАН (ТАМАГОЧИ) --- */
         #gameScreen {
             display: none;
             flex-direction: column;
-            justify-content: space-between; /* Распределяем элементы по вертикали */
+            justify-content: space-between;
             align-items: center;
             height: 100%;
             width: 100%;
             padding: 40px 20px 20px 20px;
         }
 
-        /* Счетчик кликов/очков */
-        #scoreBoard {
-            background-color: rgba(255, 255, 255, 0.6);
-            padding: 10px 30px;
-            border-radius: 20px;
-            color: #ff6b81;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 2px solid white;
-        }
-
-        /* Контейнер для нашего пухляша */
         #unicornContainer {
-            flex-grow: 1; /* Занимает все свободное место в центре */
+            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            width: 100%;
         }
 
-        /* Сам единорожка */
-        #unicornChar {
-            width: 280px; /* Оптимальный размер для тапов */
-            max-width: 80vw;
-            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15));
-            /* Анимация спокойного покачивания (дыхания) */
-            animation: float 3s ease-in-out infinite;
+        #unicornSvg {
+            width: 100%;
+            max-width: 400px; 
+            max-height: 48vh; 
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
+            transition: transform 0.1s ease; 
+        }
+
+        .blinking-eyes {
+            transform-origin: 150px 115px; 
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 94%, 98%, 100% { transform: scaleY(1); }
+            96% { transform: scaleY(0.1); }
+        }
+
+        .wagging-tail {
+            transform-origin: 180px 200px;
+            animation: wag 2s ease-in-out infinite;
+        }
+
+        @keyframes wag {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        /* --- НОВАЯ ПАНЕЛЬ В СТИЛЕ ГОВОРЯЩЕГО ТОМА --- */
+        .tom-action-panel {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 350px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tom-btn {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%; /* Делаем кнопки идеально круглыми */
+            background-color: rgba(255, 255, 255, 0.4); /* Полупрозрачный фон колбы */
+            border: 4px solid white; /* Белая окантовка */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden; /* Важно: обрезает внутренний фон по форме круга */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            /* Убираем фон картинки, если он есть, через наложение */
-            mix-blend-mode: multiply;
+            transition: transform 0.1s;
+            padding: 0;
+            /* Исправление для Safari, чтобы overflow: hidden работал на скругленных краях */
+            transform: translateZ(0); 
         }
 
-        /* Анимация покачивания */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+        .tom-btn:active {
+            transform: scale(0.9); /* Уменьшается при нажатии */
         }
 
-        /* Анимация прыжка при тапе */
-        .bounce {
-            animation: jump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; /* Перебивает float на время клика */
+        /* Внутренний уровень "жидкости" */
+        .fill-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Меняется через JavaScript */
+            transition: height 0.3s ease-out;
+            z-index: 1;
         }
 
-        @keyframes jump {
-            0% { transform: scale(1) translateY(0); }
-            50% { transform: scale(1.1) translateY(-30px); }
-            100% { transform: scale(1) translateY(0); }
+        /* Цвета для разных показателей */
+        #hungerFill { background-color: #f39c12; }
+        #happyFill { background-color: #e74c3c; }
+        #energyFill { background-color: #3498db; }
+
+        /* Иконка поверх уровня жидкости */
+        .btn-icon {
+            position: relative;
+            z-index: 2; /* Поверх фона */
+            font-size: 2.2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
+        .small-btn {
+            font-size: 1.1rem;
+            padding: 15px;
+            width: 200px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #d03e56;
+            font-weight: bold;
+            box-shadow: 0 5px 0 rgba(200, 200, 200, 0.5);
+            transition: box-shadow 0.1s, transform 0.1s;
+        }
+        .small-btn:active {
+            box-shadow: 0 0 0 rgba(200, 200, 200, 0.5);
+            transform: translateY(5px);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Экран загрузки -->
     <div id="loadingScreen">
         <img src="logo.png" alt="Maksimkin Logo">
         <div class="progress-bar-container">
@@ -216,7 +269,6 @@
         </div>
     </div>
 
-    <!-- Главное меню -->
     <div id="mainMenu">
         <div class="header-container">
             <div class="unicorn-icon">🦄</div>
@@ -224,49 +276,117 @@
         </div>
         
         <div class="window-container">
-            <button id="playBtn">Играть</button>
-            <button id="exitBtn">Выход</button>
+            <button class="menu-btn" id="playBtn">Играть</button>
+            <button class="menu-btn" id="exitBtn">Выход</button>
         </div>
     </div>
 
-    <!-- Игровой экран -->
     <div id="gameScreen">
-        <!-- Счетчик -->
-        <div id="scoreBoard">💖 <span id="scoreText">0</span></div>
 
-        <!-- Наш персонаж -->
+        <!-- Единорожка -->
         <div id="unicornContainer">
-            <img src="image_61258f.jpg" alt="Единорожка" id="unicornChar">
+            <svg viewBox="40 10 220 245" id="unicornSvg">
+                <defs>
+                    <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ff7eb3" />
+                        <stop offset="50%" stop-color="#74b9ff" />
+                        <stop offset="100%" stop-color="#55efc4" />
+                    </linearGradient>
+                </defs>
+
+                <ellipse cx="150" cy="240" rx="45" ry="7" fill="rgba(0,0,0,0.05)" />
+                <path class="wagging-tail" d="M 175 190 C 240 180, 250 240, 190 235 Z" fill="url(#rainbowGrad)" />
+                
+                <ellipse cx="105" cy="220" rx="20" ry="16" fill="#f1f2f6" />
+                <circle cx="105" cy="220" r="8" fill="#ff99a8" />
+                <ellipse cx="195" cy="220" rx="20" ry="16" fill="#f1f2f6" />
+                <circle cx="195" cy="220" r="8" fill="#ff99a8" />
+
+                <ellipse cx="150" cy="180" rx="52" ry="48" fill="#ffffff" />
+
+                <path d="M 150 70 C 220 80, 200 170, 170 170 C 180 140, 160 100, 150 70 Z" fill="url(#rainbowGrad)" />
+                <path d="M 120 95 L 105 60 L 135 80 Z" fill="#ffffff" />
+                <path d="M 180 95 L 195 60 L 165 80 Z" fill="#ffffff" />
+
+                <circle cx="150" cy="120" r="42" fill="#ffffff" />
+
+                <polygon points="143,78 157,78 150,25" fill="#FFD700" />
+                <path d="M 145 65 L 155 65" stroke="#FFA500" stroke-width="2" />
+                <path d="M 147 50 L 153 50" stroke="#FFA500" stroke-width="2" />
+                <path d="M 148 35 L 152 35" stroke="#FFA500" stroke-width="2" />
+
+                <path d="M 150 75 C 110 70, 95 110, 105 130 C 120 105, 145 95, 160 85 Z" fill="url(#rainbowGrad)" />
+
+                <ellipse cx="150" cy="145" rx="20" ry="12" fill="#FFE4E1" />
+                <path d="M 145 146 Q 150 152 155 146" fill="none" stroke="#ff6b81" stroke-width="2" stroke-linecap="round" />
+
+                <g class="blinking-eyes">
+                    <circle cx="128" cy="118" r="6" fill="#2d3436" />
+                    <circle cx="126" cy="116" r="2" fill="#ffffff" />
+                    <circle cx="172" cy="118" r="6" fill="#2d3436" />
+                    <circle cx="170" cy="116" r="2" fill="#ffffff" />
+                </g>
+
+                <circle cx="112" cy="135" r="5" fill="#ff7675" opacity="0.6" />
+                <circle cx="188" cy="135" r="5" fill="#ff7675" opacity="0.6" />
+
+                <g transform="rotate(35 110 175)">
+                    <rect x="100" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                    <circle cx="110" cy="202" r="5" fill="#ff99a8" />
+                </g>
+                <g transform="rotate(-35 190 175)">
+                    <rect x="180" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                    <circle cx="190" cy="202" r="5" fill="#ff99a8" />
+                </g>
+            </svg>
         </div>
 
-        <!-- Кнопка возврата -->
+        <!-- Кнопки в стиле Говорящего Тома -->
+        <div class="tom-action-panel">
+            <button class="tom-btn" id="feedBtn">
+                <div class="fill-level" id="hungerFill"></div>
+                <span class="btn-icon">🍖</span>
+            </button>
+            
+            <button class="tom-btn" id="playWithBtn">
+                <div class="fill-level" id="happyFill"></div>
+                <span class="btn-icon">💖</span>
+            </button>
+            
+            <button class="tom-btn" id="sleepBtn">
+                <div class="fill-level" id="energyFill"></div>
+                <span class="btn-icon">⚡</span>
+            </button>
+        </div>
+
+        <!-- Кнопка назад -->
         <button id="backBtn" class="small-btn">В меню</button>
     </div>
 
     <script>
-        // Элементы интерфейса
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('progressBar');
         const mainMenu = document.getElementById('mainMenu');
         const gameScreen = document.getElementById('gameScreen');
         
-        // Кнопки
         const playBtn = document.getElementById('playBtn');
         const exitBtn = document.getElementById('exitBtn');
         const backBtn = document.getElementById('backBtn');
 
-        // Игровые элементы
-        const unicornChar = document.getElementById('unicornChar');
-        const scoreText = document.getElementById('scoreText');
+        // Получаем фоны кнопок, которые будут "расти"
+        const hungerFill = document.getElementById('hungerFill');
+        const happyFill = document.getElementById('happyFill');
+        const energyFill = document.getElementById('energyFill');
+        const unicornSvg = document.getElementById('unicornSvg');
         
-        let score = 0; // Переменная для хранения очков
+        const feedBtn = document.getElementById('feedBtn');
+        const playWithBtn = document.getElementById('playWithBtn');
+        const sleepBtn = document.getElementById('sleepBtn');
 
-        // Логика загрузочного экрана
+        let stats = { hunger: 80, happy: 70, energy: 100 };
+
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-            }, 50);
-
+            setTimeout(() => { progressBar.style.width = '100%'; }, 50);
             setTimeout(() => {
                 loadingScreen.style.opacity = '0'; 
                 setTimeout(() => {
@@ -276,7 +396,6 @@
             }, 2500); 
         });
 
-        // Навигация
         playBtn.addEventListener('click', () => {
             mainMenu.style.display = 'none';
             gameScreen.style.display = 'flex';
@@ -291,28 +410,61 @@
             alert('Спасибо за игру! Единорожка будет скучать! 💖');
         });
 
-        // --- ЛОГИКА ИГРЫ (КЛИКЕР) ---
+        // Теперь мы меняем высоту заливки внутри кнопки
+        function updateUI() {
+            hungerFill.style.height = stats.hunger + '%';
+            happyFill.style.height = stats.happy + '%';
+            energyFill.style.height = stats.energy + '%';
+        }
 
-        // Обработка тапа по единорожке
-        unicornChar.addEventListener('click', () => {
-            // Увеличиваем очки
-            score++;
-            scoreText.innerText = score;
-
-            // Добавляем класс с анимацией прыжка
-            unicornChar.classList.add('bounce');
-
-            // Удаляем класс через 300мс (когда закончится анимация), чтобы можно было кликнуть снова
+        function animatePet() {
+            unicornSvg.style.transform = 'scale(1.03)';
             setTimeout(() => {
-                unicornChar.classList.remove('bounce');
-            }, 300);
-            
-            // Если на телефоне есть вибромоторчик, делаем легкий тактильный отклик (работает не во всех браузерах)
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
+                unicornSvg.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        feedBtn.addEventListener('click', () => {
+            if (stats.hunger < 100) {
+                stats.hunger = Math.min(100, stats.hunger + 15);
+                stats.energy = Math.min(100, stats.energy + 5);
+                animatePet();
+                updateUI();
             }
         });
 
+        playWithBtn.addEventListener('click', () => {
+            if (stats.energy > 10) {
+                stats.happy = Math.min(100, stats.happy + 15);
+                stats.energy = Math.max(0, stats.energy - 10);
+                stats.hunger = Math.max(0, stats.hunger - 5);
+                animatePet();
+                updateUI();
+            } else {
+                alert('Единорожка слишком устал для игр! Уложите его спать.');
+            }
+        });
+
+        sleepBtn.addEventListener('click', () => {
+            if (stats.energy < 100) {
+                stats.energy = Math.min(100, stats.energy + 30);
+                stats.hunger = Math.max(0, stats.hunger - 10);
+                animatePet();
+                updateUI();
+            }
+        });
+
+        // Постепенное падение характеристик
+        setInterval(() => {
+            if (gameScreen.style.display === 'flex') {
+                stats.hunger = Math.max(0, stats.hunger - 2);
+                stats.happy = Math.max(0, stats.happy - 1);
+                stats.energy = Math.max(0, stats.energy - 1);
+                updateUI();
+            }
+        }, 3000);
+
+        updateUI();
     </script>
 </body>
 </html>
