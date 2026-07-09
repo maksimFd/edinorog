@@ -79,28 +79,30 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
         }
 
-        /* --- ИГРОВАЯ ЗОНА (Сохраняет пропорции на любых экранах) --- */
         #gameArea {
             position: absolute; top: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 600px; height: 100%; z-index: 1;
-            pointer-events: none; /* Пропускаем клики сквозь пустые места */
+            pointer-events: none; 
         }
 
-        /* --- КАРТИНА --- */
+        /* --- КАРТИНА (Сдвинули влево над единорожкой) --- */
         .painting-container {
-            position: absolute; top: 12vh; left: 50%; transform: translateX(-50%);
+            position: absolute; 
+            top: 12%; 
+            left: 40%; 
+            transform: translateX(-50%);
             width: 20vw; max-width: 100px; z-index: 1;
         }
 
-        /* --- ТЕЛЕВИЗОР --- */
+        /* --- ТЕЛЕВИЗОР (Жестко приклеен к плинтусу) --- */
         .tv-container {
             position: absolute; 
-            bottom: 30vh; /* Идеально стоит на плинтусе (линия горизонта) */
+            bottom: calc(30% - 3px); /* 30% это высота пола, телевизор стоит прямо на линии */
             right: 5%; 
             width: 35vw; max-width: 160px; 
-            z-index: 1; /* Стоит У СТЕНЫ (позади единорожки) */
+            z-index: 1; 
             cursor: pointer; transition: transform 0.1s;
-            pointer-events: auto; /* Телевизор кликабелен */
+            pointer-events: auto; 
         }
         .tv-container:active { transform: scale(0.95); }
         
@@ -108,22 +110,22 @@
         @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
-        /* --- ЕДИНОРОЖКА --- */
+        /* --- ЕДИНОРОЖКА (Сдвинули влево освобождая ТВ) --- */
         #unicornContainer {
             position: absolute;
-            bottom: 12vh; /* Сидит ближе к нам, чем телевизор */
-            left: 50%; transform: translateX(-50%);
+            bottom: 12%; 
+            left: 40%; /* Раньше было 50%, теперь питомец левее */
+            transform: translateX(-50%);
             width: 75vw; max-width: 400px; 
-            z-index: 2; /* Находится ПЕРЕД телевизором */
-            pointer-events: none; /* МАГИЯ: прозрачный квадрат контейнера не блокирует клики! */
+            z-index: 2; 
+            pointer-events: none; 
         }
         #unicornSvg {
             width: 100%; height: auto; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
             transition: transform 0.1s ease; touch-action: none; cursor: pointer;
-            pointer-events: none; /* Пропускаем клики сквозь сам SVG */
+            pointer-events: none; 
         }
         
-        /* Возвращаем кликабельность ТОЛЬКО нарисованным частям тела! */
         #unicornBodyGroup {
             pointer-events: auto; 
         }
@@ -135,7 +137,7 @@
 
         /* --- ИНДИКАТОРЫ --- */
         .stats-container { 
-            position: absolute; bottom: 3vh; left: 0; width: 100%;
+            position: absolute; bottom: 4%; left: 0; width: 100%;
             display: flex; gap: 5vw; z-index: 10; justify-content: center; 
             pointer-events: none;
         }
@@ -154,7 +156,7 @@
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 18%; left: 40%; transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
             border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
@@ -201,7 +203,7 @@
     <!-- ИГРОВОЙ ЭКРАН -->
     <div id="gameScreen">
         
-        <!-- АДАПТИВНЫЙ ФОН (НА ВЕСЬ ЭКРАН) -->
+        <!-- АДАПТИВНЫЙ ФОН -->
         <svg id="roomBg" width="100%" height="100%">
             <defs>
                 <pattern id="wallPattern" width="40" height="60" patternUnits="userSpaceOnUse">
@@ -219,7 +221,7 @@
             <rect y="70%" width="100%" height="10" fill="#ffffff" opacity="0.8" />
         </svg>
 
-        <!-- БЕЗОПАСНАЯ ИГРОВАЯ ЗОНА (Ограничивает элементы на планшетах/ПК) -->
+        <!-- БЕЗОПАСНАЯ ИГРОВАЯ ЗОНА -->
         <div id="gameArea">
             
             <!-- Облачко уведомлений -->
@@ -238,7 +240,7 @@
                 </svg>
             </div>
 
-            <!-- Телевизор (Стоит на стене, кликабелен) -->
+            <!-- Телевизор -->
             <div class="tv-container" id="tvGroup">
                 <svg viewBox="0 0 200 220">
                     <ellipse cx="100" cy="210" rx="90" ry="15" fill="rgba(0,0,0,0.15)" /> 
@@ -270,7 +272,6 @@
                         </linearGradient>
                     </defs>
 
-                    <!-- Группа, которая ловит клики (только тело единорожки) -->
                     <g id="unicornBodyGroup">
                         <ellipse cx="150" cy="240" rx="45" ry="7" fill="rgba(0,0,0,0.1)" />
                         <path class="wagging-tail" d="M 175 190 C 240 180, 250 240, 190 235 Z" fill="url(#rainbowGrad)" />
@@ -317,7 +318,7 @@
                 <div class="stat-indicator"><div class="fill-level" id="energyFill"></div><span class="icon">⚡</span></div>
             </div>
 
-        </div> <!-- Конец Game Area -->
+        </div> 
     </div>
 
     <script>
@@ -335,12 +336,10 @@
         const happyFill = document.getElementById('happyFill');
         const energyFill = document.getElementById('energyFill');
         
-        // Теперь мы вешаем слушатели на группу тела, а не на весь SVG-квадрат
         const unicornBodyGroup = document.getElementById('unicornBodyGroup');
         const unicornSvg = document.getElementById('unicornSvg');
         const speechBubble = document.getElementById('speechBubble');
 
-        // Элементы ТВ
         const tvGroup = document.getElementById('tvGroup');
         const tvLoadingBg = document.getElementById('tvLoadingBg');
         const tvLoadingBar = document.getElementById('tvLoadingBar');
@@ -361,10 +360,9 @@
             }, 2500); 
         });
 
-        // Запуск игры
         playBtn.addEventListener('click', () => {
             mainMenu.style.display = 'none';
-            gameScreen.style.display = 'block'; // Теперь block, так как используем absolute позиционирование
+            gameScreen.style.display = 'block'; 
             updateUI();
             startTvAnimation();
         });
@@ -396,7 +394,7 @@
         ['click', 'pointerup'].forEach(eventType => {
             tvGroup.addEventListener(eventType, (e) => {
                 e.preventDefault();
-                e.stopPropagation(); // Блокируем клик, чтобы не ушел дальше
+                e.stopPropagation(); 
                 if (isTvReady) {
                     gameScreen.style.display = 'none';
                     miniGamesScreen.style.display = 'flex';
@@ -405,7 +403,6 @@
             });
         });
 
-        // Возврат из мини-игр
         backBtn.addEventListener('click', () => {
             miniGamesScreen.style.display = 'none';
             gameScreen.style.display = 'block';
@@ -481,7 +478,6 @@
             }
         });
 
-        // Падение характеристик
         setInterval(() => {
             if (gameScreen.style.display === 'block') {
                 stats.hunger = Math.max(0, stats.hunger - 2);
