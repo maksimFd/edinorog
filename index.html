@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой единорожка</title> 
+
+    <!-- Иконка для Android и обычных браузеров -->
+    <link rel="icon" type="image/png" href="iconka_prilog.png">
+    <!-- Иконка специально для iPhone/iPad -->
+    <link rel="apple-touch-icon" href="iconka_prilog.png">
+
     <style>
         * {
             margin: 0;
@@ -93,7 +99,7 @@
         .painting-container {
             position: absolute; 
             top: 7%; 
-            left: 28%; /* Чуть сдвинули вправо (было 22%) */
+            left: 28%; 
             transform: translateX(-50%);
             width: 18vw; max-width: 90px; z-index: 1;
         }
@@ -119,7 +125,7 @@
         #unicornContainer {
             position: absolute;
             bottom: 17%; 
-            left: 28%; /* Пододвинули ближе к телевизору (было 22%) */
+            left: 28%; 
             transform: translateX(-50%);
             width: 75vw; 
             max-width: 400px; 
@@ -168,7 +174,7 @@
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 12%; left: 28%; /* Выровнено по центру с единорожкой */
+            position: absolute; top: 12%; left: 28%; 
             transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 10px 20px;
             border-radius: 20px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
