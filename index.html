@@ -70,37 +70,37 @@
         }
         button.menu-btn:active { transform: translateY(8px); box-shadow: 0 0 0 #d03e56, 0 5px 10px rgba(255, 107, 129, 0.4); }
 
-        /* --- ИГРОВОЙ ЭКРАН --- */
+        /* --- ИГРОВОЙ ЭКРАН И ФОН --- */
         #gameScreen {
-            display: none; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            align-items: center; 
-            height: 100%; 
-            width: 100%; 
-            position: relative;
-            padding-bottom: 4vh; 
+            display: none; width: 100%; height: 100%; position: relative;
         }
-
+        
         #roomBg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
         }
 
-        /* --- КАРТИНА (На стене) --- */
-        .painting-container {
-            position: absolute; top: 12vh; left: 50%; transform: translateX(-50%);
-            width: 100px; max-width: 25vw; z-index: 1;
+        /* --- ИГРОВАЯ ЗОНА (Сохраняет пропорции на любых экранах) --- */
+        #gameArea {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 600px; height: 100%; z-index: 1;
+            pointer-events: none; /* Пропускаем клики сквозь пустые места */
         }
 
-        /* --- ТЕЛЕВИЗОР (Привязан к полу и на заднем плане) --- */
+        /* --- КАРТИНА --- */
+        .painting-container {
+            position: absolute; top: 12vh; left: 50%; transform: translateX(-50%);
+            width: 20vw; max-width: 100px; z-index: 1;
+        }
+
+        /* --- ТЕЛЕВИЗОР --- */
         .tv-container {
             position: absolute; 
-            bottom: 25vh; /* Твердо стоит на полу (линия горизонта на 30vh от низа) */
-            right: 4vw; 
-            width: 125px; 
-            max-width: 35vw; 
-            z-index: 1; /* ЗА единорожкой, у стены */
+            bottom: 30vh; /* Идеально стоит на плинтусе (линия горизонта) */
+            right: 5%; 
+            width: 35vw; max-width: 160px; 
+            z-index: 1; /* Стоит У СТЕНЫ (позади единорожки) */
             cursor: pointer; transition: transform 0.1s;
+            pointer-events: auto; /* Телевизор кликабелен */
         }
         .tv-container:active { transform: scale(0.95); }
         
@@ -108,28 +108,24 @@
         @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
-        /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
-        #speechBubble {
-            --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
-            background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
-            border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
-        }
-        #speechBubble::after {
-            content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-            border-width: 10px 10px 0; border-style: solid; border-color: var(--bg-color) transparent transparent transparent;
-        }
-
-        /* --- КОНТЕЙНЕР ЕДИНОРОЖКИ --- */
+        /* --- ЕДИНОРОЖКА --- */
         #unicornContainer {
-            flex-grow: 1; display: flex; align-items: flex-end; justify-content: center; width: 100%; z-index: 2; margin-bottom: 2vh;
-            pointer-events: none; /* Пропускаем клики насквозь контейнера к телевизору */
+            position: absolute;
+            bottom: 12vh; /* Сидит ближе к нам, чем телевизор */
+            left: 50%; transform: translateX(-50%);
+            width: 75vw; max-width: 400px; 
+            z-index: 2; /* Находится ПЕРЕД телевизором */
+            pointer-events: none; /* МАГИЯ: прозрачный квадрат контейнера не блокирует клики! */
         }
         #unicornSvg {
-            width: 90vw; max-width: 450px; max-height: 55vh; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
+            width: 100%; height: auto; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
             transition: transform 0.1s ease; touch-action: none; cursor: pointer;
-            pointer-events: auto; /* Возвращаем клики самой единорожке */
+            pointer-events: none; /* Пропускаем клики сквозь сам SVG */
+        }
+        
+        /* Возвращаем кликабельность ТОЛЬКО нарисованным частям тела! */
+        #unicornBodyGroup {
+            pointer-events: auto; 
         }
 
         .blinking-eyes { transform-origin: 150px 115px; animation: blink 4s infinite; }
@@ -138,17 +134,35 @@
         @keyframes wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
         /* --- ИНДИКАТОРЫ --- */
-        .stats-container { display: flex; gap: 5vw; z-index: 5; justify-content: center; width: 100%; }
+        .stats-container { 
+            position: absolute; bottom: 3vh; left: 0; width: 100%;
+            display: flex; gap: 5vw; z-index: 10; justify-content: center; 
+            pointer-events: none;
+        }
         .stat-indicator {
-            width: 75px; height: 75px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
+            width: 70px; height: 70px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
             border: 4px solid white; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            pointer-events: auto;
         }
         .fill-level { position: absolute; bottom: 0; width: 100%; transition: height 0.5s ease; z-index: 1; }
         #hungerFill { background: #e67e22; }
         #happyFill { background: #e74c3c; }
         #energyFill { background: #3498db; }
-        .icon { position: relative; z-index: 2; font-size: 1.8rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+        .icon { position: relative; z-index: 2; font-size: 1.6rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+
+        /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
+        #speechBubble {
+            --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
+            position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+            background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
+            border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
+        }
+        #speechBubble::after {
+            content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+            border-width: 10px 10px 0; border-style: solid; border-color: var(--bg-color) transparent transparent transparent;
+        }
 
     </style>
 </head>
@@ -187,10 +201,7 @@
     <!-- ИГРОВОЙ ЭКРАН -->
     <div id="gameScreen">
         
-        <!-- Облачко уведомлений -->
-        <div id="speechBubble">Приветик!</div>
-
-        <!-- АДАПТИВНЫЙ ФОН -->
+        <!-- АДАПТИВНЫЙ ФОН (НА ВЕСЬ ЭКРАН) -->
         <svg id="roomBg" width="100%" height="100%">
             <defs>
                 <pattern id="wallPattern" width="40" height="60" patternUnits="userSpaceOnUse">
@@ -208,99 +219,105 @@
             <rect y="70%" width="100%" height="10" fill="#ffffff" opacity="0.8" />
         </svg>
 
-        <!-- Картина -->
-        <div class="painting-container">
-            <svg viewBox="0 0 120 120">
-                <rect width="120" height="120" fill="#ffffff" stroke="#a4b0be" stroke-width="6"/>
-                <rect x="10" y="10" width="100" height="100" fill="#fbc531" />
-                <circle cx="60" cy="70" r="30" fill="#ff4757" />
-                <polygon points="35,50 45,25 60,45" fill="#ff4757"/>
-                <polygon points="60,45 75,25 85,50" fill="#ff4757"/>
-                <circle cx="48" cy="65" r="5" fill="#ffffff" />
-                <circle cx="72" cy="65" r="5" fill="#ffffff" />
-            </svg>
-        </div>
+        <!-- БЕЗОПАСНАЯ ИГРОВАЯ ЗОНА (Ограничивает элементы на планшетах/ПК) -->
+        <div id="gameArea">
+            
+            <!-- Облачко уведомлений -->
+            <div id="speechBubble">Приветик!</div>
 
-        <!-- Телевизор (Теперь на полу и ЗА единорожкой!) -->
-        <div class="tv-container" id="tvGroup">
-            <svg viewBox="0 0 200 220">
-                <ellipse cx="100" cy="210" rx="90" ry="15" fill="rgba(0,0,0,0.15)" /> 
-                <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
-                <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
-                <rect x="0" y="0" width="200" height="160" rx="25" fill="#ff7f50" /> 
-                <rect x="15" y="15" width="140" height="120" rx="30" fill="#f5f6fa" /> 
-                <rect x="25" y="25" width="120" height="100" rx="20" fill="#718093" /> 
-                
-                <!-- Загрузочная строка в ТВ -->
-                <rect x="40" y="70" width="90" height="10" rx="5" fill="#2f3640" id="tvLoadingBg" style="display: none;" />
-                <rect x="40" y="70" width="0" height="10" rx="5" fill="#55efc4" id="tvLoadingBar" style="display: none;" />
-                
-                <!-- Надпись PLAY -->
-                <text x="85" y="82" font-family="Arial" font-size="22" font-weight="bold" fill="#55efc4" text-anchor="middle" id="tvPlayText" class="play-text-anim" style="display: none;">PLAY</text>
+            <!-- Картина -->
+            <div class="painting-container">
+                <svg viewBox="0 0 120 120">
+                    <rect width="120" height="120" fill="#ffffff" stroke="#a4b0be" stroke-width="6"/>
+                    <rect x="10" y="10" width="100" height="100" fill="#fbc531" />
+                    <circle cx="60" cy="70" r="30" fill="#ff4757" />
+                    <polygon points="35,50 45,25 60,45" fill="#ff4757"/>
+                    <polygon points="60,45 75,25 85,50" fill="#ff4757"/>
+                    <circle cx="48" cy="65" r="5" fill="#ffffff" />
+                    <circle cx="72" cy="65" r="5" fill="#ffffff" />
+                </svg>
+            </div>
 
-                <!-- Блик на экране -->
-                <polygon points="30,40 90,25 60,110" fill="#ffffff" opacity="0.2" pointer-events="none" /> 
-                
-                <circle cx="175" cy="40" r="10" fill="#2f3640" /> 
-                <circle cx="175" cy="80" r="10" fill="#2f3640" /> 
-            </svg>
-        </div>
+            <!-- Телевизор (Стоит на стене, кликабелен) -->
+            <div class="tv-container" id="tvGroup">
+                <svg viewBox="0 0 200 220">
+                    <ellipse cx="100" cy="210" rx="90" ry="15" fill="rgba(0,0,0,0.15)" /> 
+                    <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
+                    <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
+                    <rect x="0" y="0" width="200" height="160" rx="25" fill="#ff7f50" /> 
+                    <rect x="15" y="15" width="140" height="120" rx="30" fill="#f5f6fa" /> 
+                    <rect x="25" y="25" width="120" height="100" rx="20" fill="#718093" /> 
+                    
+                    <rect x="40" y="70" width="90" height="10" rx="5" fill="#2f3640" id="tvLoadingBg" style="display: none;" />
+                    <rect x="40" y="70" width="0" height="10" rx="5" fill="#55efc4" id="tvLoadingBar" style="display: none;" />
+                    
+                    <text x="85" y="82" font-family="Arial" font-size="22" font-weight="bold" fill="#55efc4" text-anchor="middle" id="tvPlayText" class="play-text-anim" style="display: none;">PLAY</text>
 
-        <!-- Единорожка -->
-        <div id="unicornContainer">
-            <svg viewBox="40 10 220 245" id="unicornSvg">
-                <defs>
-                    <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#ff7eb3" />
-                        <stop offset="50%" stop-color="#74b9ff" />
-                        <stop offset="100%" stop-color="#55efc4" />
-                    </linearGradient>
-                </defs>
+                    <polygon points="30,40 90,25 60,110" fill="#ffffff" opacity="0.2" pointer-events="none" /> 
+                    <circle cx="175" cy="40" r="10" fill="#2f3640" /> 
+                    <circle cx="175" cy="80" r="10" fill="#2f3640" /> 
+                </svg>
+            </div>
 
-                <ellipse cx="150" cy="240" rx="45" ry="7" fill="rgba(0,0,0,0.1)" />
-                <path class="wagging-tail" d="M 175 190 C 240 180, 250 240, 190 235 Z" fill="url(#rainbowGrad)" />
-                <ellipse cx="105" cy="220" rx="20" ry="16" fill="#f1f2f6" />
-                <circle cx="105" cy="220" r="8" fill="#ff99a8" />
-                <ellipse cx="195" cy="220" rx="20" ry="16" fill="#f1f2f6" />
-                <circle cx="195" cy="220" r="8" fill="#ff99a8" />
-                <ellipse cx="150" cy="180" rx="52" ry="48" fill="#ffffff" />
-                <path d="M 150 70 C 220 80, 200 170, 170 170 C 180 140, 160 100, 150 70 Z" fill="url(#rainbowGrad)" />
-                <path d="M 120 95 L 105 60 L 135 80 Z" fill="#ffffff" />
-                <path d="M 180 95 L 195 60 L 165 80 Z" fill="#ffffff" />
-                <circle cx="150" cy="120" r="42" fill="#ffffff" />
-                <polygon points="143,78 157,78 150,25" fill="#FFD700" />
-                <path d="M 145 65 L 155 65" stroke="#FFA500" stroke-width="2" />
-                <path d="M 147 50 L 153 50" stroke="#FFA500" stroke-width="2" />
-                <path d="M 148 35 L 152 35" stroke="#FFA500" stroke-width="2" />
-                <path d="M 150 75 C 110 70, 95 110, 105 130 C 120 105, 145 95, 160 85 Z" fill="url(#rainbowGrad)" />
-                <ellipse cx="150" cy="145" rx="20" ry="12" fill="#FFE4E1" />
-                <path d="M 145 146 Q 150 152 155 146" fill="none" stroke="#ff6b81" stroke-width="2" stroke-linecap="round" />
-                <g class="blinking-eyes">
-                    <circle cx="128" cy="118" r="6" fill="#2d3436" />
-                    <circle cx="126" cy="116" r="2" fill="#ffffff" />
-                    <circle cx="172" cy="118" r="6" fill="#2d3436" />
-                    <circle cx="170" cy="116" r="2" fill="#ffffff" />
-                </g>
-                <circle cx="112" cy="135" r="5" fill="#ff7675" opacity="0.6" />
-                <circle cx="188" cy="135" r="5" fill="#ff7675" opacity="0.6" />
-                <g transform="rotate(35 110 175)">
-                    <rect x="100" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
-                    <circle cx="110" cy="202" r="5" fill="#ff99a8" />
-                </g>
-                <g transform="rotate(-35 190 175)">
-                    <rect x="180" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
-                    <circle cx="190" cy="202" r="5" fill="#ff99a8" />
-                </g>
-            </svg>
-        </div>
+            <!-- Единорожка -->
+            <div id="unicornContainer">
+                <svg viewBox="40 10 220 245" id="unicornSvg">
+                    <defs>
+                        <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff7eb3" />
+                            <stop offset="50%" stop-color="#74b9ff" />
+                            <stop offset="100%" stop-color="#55efc4" />
+                        </linearGradient>
+                    </defs>
 
-        <!-- ИНДИКАТОРЫ -->
-        <div class="stats-container">
-            <div class="stat-indicator"><div class="fill-level" id="hungerFill"></div><span class="icon">🍖</span></div>
-            <div class="stat-indicator"><div class="fill-level" id="happyFill"></div><span class="icon">💖</span></div>
-            <div class="stat-indicator"><div class="fill-level" id="energyFill"></div><span class="icon">⚡</span></div>
-        </div>
+                    <!-- Группа, которая ловит клики (только тело единорожки) -->
+                    <g id="unicornBodyGroup">
+                        <ellipse cx="150" cy="240" rx="45" ry="7" fill="rgba(0,0,0,0.1)" />
+                        <path class="wagging-tail" d="M 175 190 C 240 180, 250 240, 190 235 Z" fill="url(#rainbowGrad)" />
+                        <ellipse cx="105" cy="220" rx="20" ry="16" fill="#f1f2f6" />
+                        <circle cx="105" cy="220" r="8" fill="#ff99a8" />
+                        <ellipse cx="195" cy="220" rx="20" ry="16" fill="#f1f2f6" />
+                        <circle cx="195" cy="220" r="8" fill="#ff99a8" />
+                        <ellipse cx="150" cy="180" rx="52" ry="48" fill="#ffffff" />
+                        <path d="M 150 70 C 220 80, 200 170, 170 170 C 180 140, 160 100, 150 70 Z" fill="url(#rainbowGrad)" />
+                        <path d="M 120 95 L 105 60 L 135 80 Z" fill="#ffffff" />
+                        <path d="M 180 95 L 195 60 L 165 80 Z" fill="#ffffff" />
+                        <circle cx="150" cy="120" r="42" fill="#ffffff" />
+                        <polygon points="143,78 157,78 150,25" fill="#FFD700" />
+                        <path d="M 145 65 L 155 65" stroke="#FFA500" stroke-width="2" />
+                        <path d="M 147 50 L 153 50" stroke="#FFA500" stroke-width="2" />
+                        <path d="M 148 35 L 152 35" stroke="#FFA500" stroke-width="2" />
+                        <path d="M 150 75 C 110 70, 95 110, 105 130 C 120 105, 145 95, 160 85 Z" fill="url(#rainbowGrad)" />
+                        <ellipse cx="150" cy="145" rx="20" ry="12" fill="#FFE4E1" />
+                        <path d="M 145 146 Q 150 152 155 146" fill="none" stroke="#ff6b81" stroke-width="2" stroke-linecap="round" />
+                        <g class="blinking-eyes">
+                            <circle cx="128" cy="118" r="6" fill="#2d3436" />
+                            <circle cx="126" cy="116" r="2" fill="#ffffff" />
+                            <circle cx="172" cy="118" r="6" fill="#2d3436" />
+                            <circle cx="170" cy="116" r="2" fill="#ffffff" />
+                        </g>
+                        <circle cx="112" cy="135" r="5" fill="#ff7675" opacity="0.6" />
+                        <circle cx="188" cy="135" r="5" fill="#ff7675" opacity="0.6" />
+                        <g transform="rotate(35 110 175)">
+                            <rect x="100" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                            <circle cx="110" cy="202" r="5" fill="#ff99a8" />
+                        </g>
+                        <g transform="rotate(-35 190 175)">
+                            <rect x="180" y="175" width="20" height="35" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                            <circle cx="190" cy="202" r="5" fill="#ff99a8" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
 
+            <!-- ИНДИКАТОРЫ -->
+            <div class="stats-container">
+                <div class="stat-indicator"><div class="fill-level" id="hungerFill"></div><span class="icon">🍖</span></div>
+                <div class="stat-indicator"><div class="fill-level" id="happyFill"></div><span class="icon">💖</span></div>
+                <div class="stat-indicator"><div class="fill-level" id="energyFill"></div><span class="icon">⚡</span></div>
+            </div>
+
+        </div> <!-- Конец Game Area -->
     </div>
 
     <script>
@@ -317,6 +334,9 @@
         const hungerFill = document.getElementById('hungerFill');
         const happyFill = document.getElementById('happyFill');
         const energyFill = document.getElementById('energyFill');
+        
+        // Теперь мы вешаем слушатели на группу тела, а не на весь SVG-квадрат
+        const unicornBodyGroup = document.getElementById('unicornBodyGroup');
         const unicornSvg = document.getElementById('unicornSvg');
         const speechBubble = document.getElementById('speechBubble');
 
@@ -344,7 +364,7 @@
         // Запуск игры
         playBtn.addEventListener('click', () => {
             mainMenu.style.display = 'none';
-            gameScreen.style.display = 'flex'; 
+            gameScreen.style.display = 'block'; // Теперь block, так как используем absolute позиционирование
             updateUI();
             startTvAnimation();
         });
@@ -363,10 +383,8 @@
             tvLoadingBg.style.display = 'block';
             tvLoadingBar.style.display = 'block';
 
-            // Плавно заполняем
             setTimeout(() => { tvLoadingBar.style.width = '90px'; }, 100);
 
-            // Через 2.2 секунды скрываем полоску, показываем PLAY и РАЗРЕШАЕМ клик
             setTimeout(() => {
                 tvLoadingBg.style.display = 'none';
                 tvLoadingBar.style.display = 'none';
@@ -375,10 +393,10 @@
             }, 2200);
         }
 
-        // Обрабатываем и клики мышкой, и касания пальцем
         ['click', 'pointerup'].forEach(eventType => {
             tvGroup.addEventListener(eventType, (e) => {
-                e.preventDefault(); 
+                e.preventDefault();
+                e.stopPropagation(); // Блокируем клик, чтобы не ушел дальше
                 if (isTvReady) {
                     gameScreen.style.display = 'none';
                     miniGamesScreen.style.display = 'flex';
@@ -390,7 +408,7 @@
         // Возврат из мини-игр
         backBtn.addEventListener('click', () => {
             miniGamesScreen.style.display = 'none';
-            gameScreen.style.display = 'flex';
+            gameScreen.style.display = 'block';
             startTvAnimation(); 
         });
 
@@ -425,23 +443,23 @@
         let isDragging = false;
         let totalMove = 0; 
 
-        unicornSvg.addEventListener('pointerdown', (e) => {
+        unicornBodyGroup.addEventListener('pointerdown', (e) => {
             startX = e.clientX; startY = e.clientY;
             lastX = e.clientX; lastY = e.clientY;
             isDragging = true; totalMove = 0;
-            unicornSvg.setPointerCapture(e.pointerId);
+            unicornBodyGroup.setPointerCapture(e.pointerId);
         });
 
-        unicornSvg.addEventListener('pointermove', (e) => {
+        unicornBodyGroup.addEventListener('pointermove', (e) => {
             if (!isDragging) return;
             totalMove += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
             lastX = e.clientX; lastY = e.clientY;
         });
 
-        unicornSvg.addEventListener('pointerup', (e) => {
+        unicornBodyGroup.addEventListener('pointerup', (e) => {
             if (!isDragging) return;
             isDragging = false;
-            unicornSvg.releasePointerCapture(e.pointerId);
+            unicornBodyGroup.releasePointerCapture(e.pointerId);
 
             let dy = e.clientY - startY;
 
@@ -465,7 +483,7 @@
 
         // Падение характеристик
         setInterval(() => {
-            if (gameScreen.style.display === 'flex') {
+            if (gameScreen.style.display === 'block') {
                 stats.hunger = Math.max(0, stats.hunger - 2);
                 stats.happy = Math.max(0, stats.happy - 1);
                 stats.energy = Math.max(0, stats.energy - 1);
