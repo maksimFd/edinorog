@@ -60,7 +60,7 @@
         .unicorn-icon { font-size: 5rem; margin-bottom: 5px; filter: drop-shadow(0px 5px 0px #ff6b81); }
 
         .window-container {
-            background-color: rgba(255, 182, 193, 0.4); backdrop-filter: blur(12px);
+            background-color: rgba(255, 182, 193, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-radius: 40px; border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             width: 92%; height: 50vh; margin-bottom: 3vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px; padding: 20px;
         }
@@ -88,16 +88,16 @@
         /* --- КАРТИНА --- */
         .painting-container {
             position: absolute; 
-            top: 10%; 
-            left: 32%; /* Выровнено по центру единорога */
+            top: 8%; 
+            left: 35%; 
             transform: translateX(-50%);
             width: 20vw; max-width: 100px; z-index: 1;
         }
 
-        /* --- ТЕЛЕВИЗОР (Окончательно приземлен) --- */
+        /* --- ТЕЛЕВИЗОР --- */
         .tv-container {
             position: absolute; 
-            bottom: 24%; /* Сместили ниже, чтобы тень упала на пол, а подставка стала на плинтус */
+            bottom: 31%; /* Подняли чуть выше для новой панели */
             right: 3%; 
             width: 40vw; max-width: 180px; 
             z-index: 1; 
@@ -105,8 +105,7 @@
             pointer-events: auto; 
         }
         .tv-container svg {
-            display: block; /* Убивает нижний невидимый отступ */
-            width: 100%; height: auto;
+            display: block; width: 100%; height: auto;
         }
         .tv-container:active { transform: scale(0.95); }
         
@@ -114,14 +113,14 @@
         @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
-        /* --- ЕДИНОРОЖКА --- */
+        /* --- ЕДИНОРОЖКА (Сделали БОЛЬШЕ и подняли над панелью) --- */
         #unicornContainer {
             position: absolute;
-            bottom: 10%; /* Посадили чуть плотнее на пол */
-            left: 32%; /* Чуть отодвинули от края для красоты */
+            bottom: 19%; /* Подняли, чтобы не перекрывал нижнюю панель */
+            left: 35%; 
             transform: translateX(-50%);
-            width: 65vw; /* Оптимальный размер */
-            max-width: 350px; 
+            width: 80vw; /* ВЕРНУЛИ БОЛЬШОЙ РАЗМЕР */
+            max-width: 400px; 
             z-index: 2; 
             pointer-events: none; 
         }
@@ -141,28 +140,41 @@
         .wagging-tail { transform-origin: 180px 200px; animation: wag 2s ease-in-out infinite; }
         @keyframes wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
-        /* --- ИНДИКАТОРЫ --- */
+        /* --- ИНДИКАТОРЫ В КРАСИВОМ ОКОШКЕ --- */
         .stats-container { 
-            position: absolute; bottom: 4%; left: 0; width: 100%;
-            display: flex; gap: 5vw; z-index: 10; justify-content: center; 
-            pointer-events: none;
+            position: absolute; 
+            bottom: 3%; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 92%; /* Ширина как у окна в меню */
+            max-width: 450px;
+            background-color: rgba(255, 182, 193, 0.4); /* Розовое матовое стекло */
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px; 
+            border: 2px solid rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 15px 10px;
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center;
+            z-index: 10; 
+            pointer-events: auto; /* Панель активна */
         }
         .stat-indicator {
-            width: 70px; height: 70px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
+            width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
             border: 4px solid white; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            pointer-events: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
         .fill-level { position: absolute; bottom: 0; width: 100%; transition: height 0.5s ease; z-index: 1; }
         #hungerFill { background: #e67e22; }
         #happyFill { background: #e74c3c; }
         #energyFill { background: #3498db; }
-        .icon { position: relative; z-index: 2; font-size: 1.6rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+        .icon { position: relative; z-index: 2; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 15%; left: 32%; transform: translateX(-50%);
+            position: absolute; top: 15%; left: 35%; transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
             border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
@@ -246,12 +258,10 @@
                 </svg>
             </div>
 
-            <!-- Телевизор (Расширенный холст, чтобы влезла тень снизу) -->
+            <!-- Телевизор -->
             <div class="tv-container" id="tvGroup">
                 <svg viewBox="0 0 200 215">
-                    <!-- Тень на полу (Y=205) -->
                     <ellipse cx="100" cy="205" rx="90" ry="10" fill="rgba(0,0,0,0.15)" /> 
-                    <!-- Низ подставки на Y=205 -->
                     <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
                     <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
                     <rect x="0" y="0" width="200" height="160" rx="25" fill="#ff7f50" /> 
@@ -269,7 +279,7 @@
                 </svg>
             </div>
 
-            <!-- Единорожка -->
+            <!-- Единорожка (Опять большой и красивый) -->
             <div id="unicornContainer">
                 <svg viewBox="40 10 220 245" id="unicornSvg">
                     <defs>
@@ -320,7 +330,7 @@
                 </svg>
             </div>
 
-            <!-- ИНДИКАТОРЫ -->
+            <!-- ИНДИКАТОРЫ В НОВОМ ОКОШКЕ -->
             <div class="stats-container">
                 <div class="stat-indicator"><div class="fill-level" id="hungerFill"></div><span class="icon">🍖</span></div>
                 <div class="stat-indicator"><div class="fill-level" id="happyFill"></div><span class="icon">💖</span></div>
