@@ -98,10 +98,10 @@
             width: 18vw; max-width: 90px; z-index: 1;
         }
 
-        /* --- ТЕЛЕВИЗОР --- */
+        /* --- ТЕЛЕВИЗОР (ТЕПЕРЬ ТОЧНО НА ПОЛУ) --- */
         .tv-container {
             position: absolute; 
-            bottom: 30%; 
+            bottom: 22%; /* Опустили до 22%, чтобы он перекрывал белую линию плинтуса */
             right: 4%; 
             width: 38vw; max-width: 170px; 
             z-index: 1; 
@@ -139,7 +139,7 @@
         .wagging-tail { transform-origin: 180px 200px; animation: wag 2s ease-in-out infinite; }
         @keyframes wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
-        /* --- ИНДИКАТОРЫ --- */
+        /* --- ИНДИКАТОРЫ В КРАСИВОМ ОКОШКЕ --- */
         .stats-container-panel { 
             position: absolute; 
             bottom: 2%; 
@@ -285,6 +285,7 @@
                         </linearGradient>
                     </defs>
 
+                    <!-- Группа, которая ловит клики (только тело единорожки) -->
                     <g id="unicornBodyGroup">
                         <ellipse cx="150" cy="240" rx="45" ry="7" fill="rgba(0,0,0,0.1)" />
                         <path class="wagging-tail" d="M 175 190 C 240 180, 250 240, 190 235 Z" fill="url(#rainbowGrad)" />
@@ -293,7 +294,6 @@
                         <ellipse cx="195" cy="220" rx="20" ry="16" fill="#f1f2f6" />
                         <circle cx="195" cy="220" r="8" fill="#ff99a8" />
                         <ellipse cx="150" cy="180" rx="52" ry="48" fill="#ffffff" />
-                        <!-- ИСПРАВЛЕНО ЗДЕСЬ: Восстановлен fill="url(#rainbowGrad)" и убран "мусор" -->
                         <path d="M 150 70 C 220 80, 200 170, 170 170 C 180 140, 160 100, 150 70 Z" fill="url(#rainbowGrad)" />
                         <path d="M 120 95 L 105 60 L 135 80 Z" fill="#ffffff" />
                         <path d="M 180 95 L 195 60 L 165 80 Z" fill="#ffffff" />
