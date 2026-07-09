@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Мой единорожка</title>
+    <title>Мой единорожка</title> 
     <style>
         * {
             margin: 0;
@@ -59,9 +59,13 @@
         h1 { color: #ffffff; font-size: 3.2rem; line-height: 1.2; text-shadow: 0px 5px 0px #ff6b81, 0 0 20px rgba(255,255,255,0.7); }
         .unicorn-icon { font-size: 5rem; margin-bottom: 5px; filter: drop-shadow(0px 5px 0px #ff6b81); }
 
-        .window-container {
-            background-color: rgba(255, 182, 193, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        .window-container, .stats-container-panel {
+            background-color: rgba(255, 182, 193, 0.4); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-radius: 40px; border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .window-container {
             width: 92%; height: 50vh; margin-bottom: 3vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px; padding: 20px;
         }
         button.menu-btn {
@@ -88,52 +92,47 @@
         /* --- КАРТИНА --- */
         .painting-container {
             position: absolute; 
-            top: 8%; 
-            left: 35%; 
+            top: 7%; 
+            left: 22%; /* Выровнено по центру с единорожкой */
             transform: translateX(-50%);
-            width: 20vw; max-width: 100px; z-index: 1;
+            width: 18vw; max-width: 90px; z-index: 1;
         }
 
         /* --- ТЕЛЕВИЗОР --- */
         .tv-container {
             position: absolute; 
-            bottom: 31%; /* Подняли чуть выше для новой панели */
-            right: 3%; 
-            width: 40vw; max-width: 180px; 
+            bottom: 30%; /* Строго на уровне пола/плинтуса */
+            right: 4%; 
+            width: 38vw; max-width: 170px; 
             z-index: 1; 
             cursor: pointer; transition: transform 0.1s;
             pointer-events: auto; 
         }
-        .tv-container svg {
-            display: block; width: 100%; height: auto;
-        }
+        .tv-container svg { display: block; width: 100%; height: auto; }
         .tv-container:active { transform: scale(0.95); }
         
         #tvLoadingBar { transition: width 2s linear; }
         @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
-        /* --- ЕДИНОРОЖКА (Сделали БОЛЬШЕ и подняли над панелью) --- */
+        /* --- ЕДИНОРОЖКА --- */
         #unicornContainer {
             position: absolute;
-            bottom: 19%; /* Подняли, чтобы не перекрывал нижнюю панель */
-            left: 35%; 
+            bottom: 17%; 
+            left: 22%; /* Сдвинут левее в красную зону */
             transform: translateX(-50%);
-            width: 80vw; /* ВЕРНУЛИ БОЛЬШОЙ РАЗМЕР */
+            width: 75vw; 
             max-width: 400px; 
             z-index: 2; 
             pointer-events: none; 
         }
         #unicornSvg {
-            display: block;
-            width: 100%; height: auto; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
+            display: block; width: 100%; height: auto; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
             transition: transform 0.1s ease; touch-action: none; cursor: pointer;
             pointer-events: none; 
         }
         
-        #unicornBodyGroup {
-            pointer-events: auto; 
-        }
+        #unicornBodyGroup { pointer-events: auto; }
 
         .blinking-eyes { transform-origin: 150px 115px; animation: blink 4s infinite; }
         @keyframes blink { 0%, 94%, 98%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
@@ -141,27 +140,22 @@
         @keyframes wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
         /* --- ИНДИКАТОРЫ В КРАСИВОМ ОКОШКЕ --- */
-        .stats-container { 
+        .stats-container-panel { 
             position: absolute; 
-            bottom: 3%; 
+            bottom: 2%; 
             left: 50%; 
             transform: translateX(-50%);
-            width: 92%; /* Ширина как у окна в меню */
+            width: 92%; 
             max-width: 450px;
-            background-color: rgba(255, 182, 193, 0.4); /* Розовое матовое стекло */
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-radius: 40px; 
-            border: 2px solid rgba(255, 255, 255, 0.6); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 15px 10px;
+            padding: 12px 10px;
             display: flex; 
             justify-content: space-around; 
             align-items: center;
             z-index: 10; 
-            pointer-events: auto; /* Панель активна */
+            pointer-events: auto; 
         }
         .stat-indicator {
-            width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
+            width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 255, 255, 0.85);
             border: 4px solid white; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
@@ -174,14 +168,15 @@
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 15%; left: 35%; transform: translateX(-50%);
-            background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
-            border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: absolute; top: 12%; left: 22%; /* Выровнено по центру с единорожкой */
+            transform: translateX(-50%);
+            background-color: var(--bg-color); color: var(--text-color); padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
         }
         #speechBubble::after {
-            content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-            border-width: 10px 10px 0; border-style: solid; border-color: var(--bg-color) transparent transparent transparent;
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            border-width: 8px 8px 0; border-style: solid; border-color: var(--bg-color) transparent transparent transparent;
         }
 
     </style>
@@ -260,8 +255,8 @@
 
             <!-- Телевизор -->
             <div class="tv-container" id="tvGroup">
-                <svg viewBox="0 0 200 215">
-                    <ellipse cx="100" cy="205" rx="90" ry="10" fill="rgba(0,0,0,0.15)" /> 
+                <svg viewBox="0 0 200 205">
+                    <ellipse cx="100" cy="200" rx="90" ry="10" fill="rgba(0,0,0,0.15)" /> 
                     <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
                     <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
                     <rect x="0" y="0" width="200" height="160" rx="25" fill="#ff7f50" /> 
@@ -279,7 +274,7 @@
                 </svg>
             </div>
 
-            <!-- Единорожка (Опять большой и красивый) -->
+            <!-- Единорожка -->
             <div id="unicornContainer">
                 <svg viewBox="40 10 220 245" id="unicornSvg">
                     <defs>
@@ -330,8 +325,8 @@
                 </svg>
             </div>
 
-            <!-- ИНДИКАТОРЫ В НОВОМ ОКОШКЕ -->
-            <div class="stats-container">
+            <!-- ИНДИКАТОРЫ В КРАСИВОМ ОКОШКЕ -->
+            <div class="stats-container-panel">
                 <div class="stat-indicator"><div class="fill-level" id="hungerFill"></div><span class="icon">🍖</span></div>
                 <div class="stat-indicator"><div class="fill-level" id="happyFill"></div><span class="icon">💖</span></div>
                 <div class="stat-indicator"><div class="fill-level" id="energyFill"></div><span class="icon">⚡</span></div>
