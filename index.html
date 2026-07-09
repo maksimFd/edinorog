@@ -85,21 +85,21 @@
             pointer-events: none; 
         }
 
-        /* --- КАРТИНА (Сдвинули влево над единорожкой) --- */
+        /* --- КАРТИНА (Сдвинули сильно влево) --- */
         .painting-container {
             position: absolute; 
-            top: 12%; 
-            left: 40%; 
+            top: 10%; 
+            left: 28%; /* На одной оси с единорогом */
             transform: translateX(-50%);
             width: 20vw; max-width: 100px; z-index: 1;
         }
 
-        /* --- ТЕЛЕВИЗОР (Жестко приклеен к плинтусу) --- */
+        /* --- ТЕЛЕВИЗОР (Обрезан пустой низ, прижат к полу и вправо) --- */
         .tv-container {
             position: absolute; 
-            bottom: calc(30% - 3px); /* 30% это высота пола, телевизор стоит прямо на линии */
-            right: 5%; 
-            width: 35vw; max-width: 160px; 
+            bottom: 30%; /* Строго на уровне плинтуса */
+            right: 3%; /* Прижат к правому краю */
+            width: 40vw; max-width: 180px; 
             z-index: 1; 
             cursor: pointer; transition: transform 0.1s;
             pointer-events: auto; 
@@ -110,13 +110,14 @@
         @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
-        /* --- ЕДИНОРОЖКА (Сдвинули влево освобождая ТВ) --- */
+        /* --- ЕДИНОРОЖКА (Сдвинули сильно влево и чуть уменьшили) --- */
         #unicornContainer {
             position: absolute;
-            bottom: 12%; 
-            left: 40%; /* Раньше было 50%, теперь питомец левее */
+            bottom: 12%; /* Сидит на полу перед телевизором */
+            left: 28%; /* Сильно сместили влево */
             transform: translateX(-50%);
-            width: 75vw; max-width: 400px; 
+            width: 55vw; /* Сделали немного у́же, чтобы не перекрывал телевизор */
+            max-width: 350px; 
             z-index: 2; 
             pointer-events: none; 
         }
@@ -156,7 +157,7 @@
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 18%; left: 40%; transform: translateX(-50%);
+            position: absolute; top: 18%; left: 28%; transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
             border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;
@@ -240,10 +241,11 @@
                 </svg>
             </div>
 
-            <!-- Телевизор -->
+            <!-- Телевизор (Исправлен viewBox: обрезана нижняя невидимая пустота!) -->
             <div class="tv-container" id="tvGroup">
-                <svg viewBox="0 0 200 220">
-                    <ellipse cx="100" cy="210" rx="90" ry="15" fill="rgba(0,0,0,0.15)" /> 
+                <!-- ВНИМАНИЕ: viewBox изменен с 220 на 205 -->
+                <svg viewBox="0 0 200 205">
+                    <ellipse cx="100" cy="200" rx="90" ry="10" fill="rgba(0,0,0,0.15)" /> 
                     <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
                     <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
                     <rect x="0" y="0" width="200" height="160" rx="25" fill="#ff7f50" /> 
