@@ -30,6 +30,9 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
             transition: opacity 0.8s ease;
         }
+        /* ВЕРНУЛИ ЛОГОТИП! */
+        #loadingScreen img { width: 250px; max-width: 80vw; margin-bottom: 40px; mix-blend-mode: multiply; }
+        
         .progress-bar-container {
             width: 220px; height: 5px; background-color: rgba(255, 255, 255, 0.3); 
             border-radius: 10px; overflow: hidden;
@@ -80,29 +83,32 @@
             padding-bottom: 4vh; 
         }
 
+        /* Адаптивный фон */
         #roomBg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-            object-fit: cover;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
         }
 
-        /* --- АНИМАЦИИ ТЕЛЕВИЗОРА --- */
-        #tvGroup { cursor: pointer; transition: transform 0.1s; }
-        #tvGroup:active { transform: translate(520px, 270px) scale(0.95); transform-origin: 85px 80px; }
+        /* --- КАРТИНА (Теперь отдельный элемент по центру) --- */
+        .painting-container {
+            position: absolute; top: 8vh; left: 50%; transform: translateX(-50%);
+            width: 120px; max-width: 25vw; z-index: 1;
+        }
+
+        /* --- ТЕЛЕВИЗОР (Теперь жестко привязан к правому краю!) --- */
+        .tv-container {
+            position: absolute; top: 38vh; right: 5vw; /* Всегда 5% от правого края */
+            width: 150px; max-width: 35vw; z-index: 15; /* Самый высокий z-index, чтобы не перекрывался */
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .tv-container:active { transform: scale(0.95); }
         
         #tvLoadingBar { transition: width 2s linear; }
-        
-        @keyframes blinkPlay {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
+        @keyframes blinkPlay { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         .play-text-anim { animation: blinkPlay 1s infinite; }
 
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
-            --bg-color: rgba(255, 255, 255, 0.95);
-            --text-color: #d03e56;
+            --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
             position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 12px 25px;
             border-radius: 25px; font-weight: bold; font-size: 1.3rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
@@ -115,11 +121,13 @@
 
         /* --- КОНТЕЙНЕР ЕДИНОРОЖКИ --- */
         #unicornContainer {
-            flex-grow: 1; display: flex; align-items: flex-end; justify-content: center; width: 100%; z-index: 2; margin-bottom: 2vh; 
+            flex-grow: 1; display: flex; align-items: flex-end; justify-content: center; width: 100%; z-index: 2; margin-bottom: 2vh;
+            pointer-events: none; /* ПРОПУСКАЕМ КЛИКИ СКВОЗЬ КОНТЕЙНЕР! Чтобы телек нажимался */
         }
         #unicornSvg {
             width: 90vw; max-width: 450px; max-height: 55vh; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
             transition: transform 0.1s ease; touch-action: none; cursor: pointer;
+            pointer-events: auto; /* Возвращаем клики самому единорожке */
         }
 
         .blinking-eyes { transform-origin: 150px 115px; animation: blink 4s infinite; }
@@ -128,9 +136,7 @@
         @keyframes wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
         /* --- ИНДИКАТОРЫ --- */
-        .stats-container {
-            display: flex; gap: 5vw; z-index: 5; justify-content: center; width: 100%;
-        }
+        .stats-container { display: flex; gap: 5vw; z-index: 5; justify-content: center; width: 100%; }
         .stat-indicator {
             width: 75px; height: 75px; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
             border: 4px solid white; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
@@ -148,6 +154,8 @@
 
     <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="loadingScreen">
+        <!-- КАРТИНКА ЛОГОТИПА -->
+        <img src="logo.png" alt="Логотип">
         <div class="progress-bar-container"><div class="progress-bar-fill" id="progressBar"></div></div>
     </div>
 
@@ -181,8 +189,9 @@
         <!-- Облачко уведомлений -->
         <div id="speechBubble">Приветик!</div>
 
-        <!-- ВЕКТОРНЫЙ ФОН: ТОЛЬКО КАРТИНА И ТЕЛЕВИЗОР -->
-        <svg id="roomBg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <!-- АДАПТИВНЫЙ ФОН: ТОЛЬКО СТЕНЫ И ПОЛ -->
+        <!-- Убрали viewBox, чтобы узоры не растягивались и не искажались на телефонах -->
+        <svg id="roomBg" width="100%" height="100%">
             <defs>
                 <pattern id="wallPattern" width="40" height="60" patternUnits="userSpaceOnUse">
                     <polygon points="20,0 40,30 20,60 0,30" fill="rgba(0,0,0,0.04)" />
@@ -192,14 +201,16 @@
                     <rect x="50" y="30" width="50" height="30" fill="rgba(0,0,0,0.03)" />
                 </pattern>
             </defs>
-            <rect width="100%" height="400" fill="#a4d17a" />
-            <rect width="100%" height="400" fill="url(#wallPattern)" />
-            <rect y="400" width="100%" height="200" fill="#c3d052" />
-            <rect y="400" width="100%" height="200" fill="url(#floorPattern)" />
-            <rect y="390" width="100%" height="10" fill="#ffffff" opacity="0.8" />
+            <rect width="100%" height="70%" fill="#a4d17a" />
+            <rect width="100%" height="70%" fill="url(#wallPattern)" />
+            <rect y="70%" width="100%" height="30%" fill="#c3d052" />
+            <rect y="70%" width="100%" height="30%" fill="url(#floorPattern)" />
+            <rect y="70%" width="100%" height="10" fill="#ffffff" opacity="0.8" />
+        </svg>
 
-            <!-- Картина с котиком -->
-            <g transform="translate(340, 60)">
+        <!-- Картина с котиком (Отдельный адаптивный блок) -->
+        <div class="painting-container">
+            <svg viewBox="0 0 120 120">
                 <rect width="120" height="120" fill="#ffffff" stroke="#a4b0be" stroke-width="6"/>
                 <rect x="10" y="10" width="100" height="100" fill="#fbc531" />
                 <circle cx="60" cy="70" r="30" fill="#ff4757" />
@@ -207,10 +218,12 @@
                 <polygon points="60,45 75,25 85,50" fill="#ff4757"/>
                 <circle cx="48" cy="65" r="5" fill="#ffffff" />
                 <circle cx="72" cy="65" r="5" fill="#ffffff" />
-            </g>
+            </svg>
+        </div>
 
-            <!-- Интерактивный Телевизор -->
-            <g transform="translate(520, 270)" id="tvGroup">
+        <!-- Телевизор (Отдельный адаптивный блок, который всегда справа) -->
+        <div class="tv-container" id="tvGroup">
+            <svg viewBox="0 0 200 220">
                 <ellipse cx="100" cy="210" rx="90" ry="15" fill="rgba(0,0,0,0.15)" /> 
                 <path d="M 20 160 L 180 160 L 190 205 L 10 205 Z" fill="#d1ccc0" /> 
                 <rect x="30" y="175" width="130" height="15" fill="#2f3640" /> 
@@ -225,13 +238,13 @@
                 <!-- Надпись PLAY -->
                 <text x="85" y="82" font-family="Arial" font-size="22" font-weight="bold" fill="#55efc4" text-anchor="middle" id="tvPlayText" class="play-text-anim" style="display: none;">PLAY</text>
 
-                <!-- Блик на экране -->
+                <!-- Блик на экране (отключили клики по блику, чтобы они доходили до самого телевизора) -->
                 <polygon points="30,40 90,25 60,110" fill="#ffffff" opacity="0.2" pointer-events="none" /> 
                 
                 <circle cx="175" cy="40" r="10" fill="#2f3640" /> 
                 <circle cx="175" cy="80" r="10" fill="#2f3640" /> 
-            </g>
-        </svg>
+            </svg>
+        </div>
 
         <!-- Единорожка -->
         <div id="unicornContainer">
@@ -362,9 +375,12 @@
             }, 2200);
         }
 
-        // Обрабатываем и click, и pointerup для мобильных
+        // Обрабатываем и клики мышкой, и касания пальцем
         ['click', 'pointerup'].forEach(eventType => {
             tvGroup.addEventListener(eventType, (e) => {
+                // Предотвращаем двойное срабатывание на мобильных
+                e.preventDefault(); 
+                
                 if (isTvReady) {
                     gameScreen.style.display = 'none';
                     miniGamesScreen.style.display = 'flex';
