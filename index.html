@@ -93,15 +93,15 @@
         .painting-container {
             position: absolute; 
             top: 7%; 
-            left: 22%; 
+            left: 28%; /* Чуть сдвинули вправо (было 22%) */
             transform: translateX(-50%);
             width: 18vw; max-width: 90px; z-index: 1;
         }
 
-        /* --- ТЕЛЕВИЗОР (ТЕПЕРЬ ТОЧНО НА ПОЛУ) --- */
+        /* --- ТЕЛЕВИЗОР --- */
         .tv-container {
             position: absolute; 
-            bottom: 22%; /* Опустили до 22%, чтобы он перекрывал белую линию плинтуса */
+            bottom: 25%; 
             right: 4%; 
             width: 38vw; max-width: 170px; 
             z-index: 1; 
@@ -119,7 +119,7 @@
         #unicornContainer {
             position: absolute;
             bottom: 17%; 
-            left: 22%; 
+            left: 28%; /* Пододвинули ближе к телевизору (было 22%) */
             transform: translateX(-50%);
             width: 75vw; 
             max-width: 400px; 
@@ -168,7 +168,7 @@
         /* --- ОБЛАЧКО УВЕДОМЛЕНИЙ --- */
         #speechBubble {
             --bg-color: rgba(255, 255, 255, 0.95); --text-color: #d03e56;
-            position: absolute; top: 12%; left: 22%; 
+            position: absolute; top: 12%; left: 28%; /* Выровнено по центру с единорожкой */
             transform: translateX(-50%);
             background-color: var(--bg-color); color: var(--text-color); padding: 10px 20px;
             border-radius: 20px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
